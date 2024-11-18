@@ -1,0 +1,154 @@
+<ng-template [ngxPermissionsOnly]="['TICKET_SSYSADMIN']" [ngxPermissionsOnlyThen]="public" [ngxPermissionsOnlyElse]="registered"></ng-template>
+<ng-template #registered>
+  <div class="card shadow-none border" style="min-height: 85vh;">
+    <div class="card-header">
+      <div class="clr-row clr-justify-content-between">
+        <div class="clr-col-6" style="margin-top: 5px">
+          <h4 class="card-title text-capitalize">
+            <ng-template [ngxPermissionsOnly]="['TICKET_SSYSADMIN']" [ngxPermissionsOnlyElse]="cc"></ng-template>
+            <ng-template #cc>
+              <a (click)="_location.back()" href="Javascript:void(0)">
+                <cds-icon shape="arrow" direction="left" solid="true" class="text-black" size="md"></cds-icon>
+              </a>
+              &nbsp;
+            </ng-template>
+            {{ 'ticket.pageTitle.success' | translate }}
+          </h4>
+        </div>
+      </div>
+    </div>
+    <div class="card-block m-1 p-1" *ngIf="ticket.mobileNumber">
+      <p>A message and email along with Ticket ID and link is sent to registered contact
+        number <span class="fw-bold">{{cnf.get('countryCode')}} {{ticket.mobileNumber}}</span> and email ID <span class="fw-bold">{{ticket.emailAddress}}</span></p>
+    </div>
+  </div>
+</ng-template>
+<ng-template #public>
+  <div *ngIf="authService.isLogin() then login else logout"></div>  
+  <ng-template #login>
+    <div class="card shadow-none border" style="min-height: 72vh;">
+      <div class="card-header">
+        <div class="clr-row clr-justify-content-between">
+          <div class="clr-col-6" style="margin-top: 5px">
+            <h4 class="card-title text-capitalize">
+              Support Ticket
+            </h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-block m-1 p-1">
+        <div class="row justify-content-center m-0 p-0 mt-5 bg-white" style="min-height: 85vh;">
+          <div class="col-sm-12 col-xs-12 col-md-10 col-lg-10 col-xl-10 col-xxl-10">
+            <div class="row">
+              <div class="col-sm-12 col-xs-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+                <div class="fst-normal fs-6 h5 pb-1 mb-1 text-success border-bottom border-dark-subtle">
+                  Ticket Successfully! Registered
+                </div>
+                <div class="row clr-justify-content-between">
+                  <div class="col-12">
+                    <p class="text-start">
+                      Your Ticket registered successfully with the Ticket id {{ticketId}}. This Ticket ID sent to your registered contact number and email ID.
+                    </p>
+                    <p class="text-start">
+                      Scan this QR code to check the status of your registered ticket and Download QR for future use.
+                    </p>
+                    <p class="text-start h4 pb-1 mb-1 text-warning font-bolder">
+                      !Please note this ID for future use!
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-xs-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6 m-0 p-0">
+                <div class="fst-normal fs-6 h5 text-center" style="color:#1E4076">
+                  Ticket ID: {{ticketId}}
+                </div>
+                <div class="text-center p-0 m-0">
+                  <ngx-qrcode-styling [config]="config" #qrcode></ngx-qrcode-styling>
+                </div>
+                <div class="text-primary text-center font-bold">
+                  <button class="btn btn-link m-0 p-0" (click)="onDownload(qrcode)">Download QR</button>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-lg-between justify-content-sm-center justify-content-xs-center">
+              <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                <div *ngIf="eirsportallink then eirs else self"></div>
+                <ng-template #eirs>
+                  <button type="button" class="btn btn-primary" [routerLink]="['/register-ticket']">
+                    Register New Ticket
+                  </button>
+                  <a type="button" class="btn btn-primary" [href]="eirsportallink">
+                    Back to Home
+                  </a>
+                </ng-template>
+                <ng-template #self>
+                  <button type="button" class="btn btn-primary" [routerLink]="['/ticket/register-ticket']">
+                    Register New Ticket
+                  </button>
+                  <button type="button" class="btn btn-primary" [routerLink]="['/ticket']">
+                    Back to Home
+                  </button>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #logout>
+    <div class="row justify-content-center m-0 p-0 mt-5 bg-white" style="min-height: 72vh;">
+      <div class="col-sm-12 col-xs-12 col-md-10 col-lg-10 col-xl-10 col-xxl-10">
+        <div class="row">
+          <div class="col-sm-12 col-xs-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+            <div class="fst-normal fs-6 h5 pb-1 mb-1 text-success border-bottom border-dark-subtle">
+              {{"ticket.success.title1" | translate}}
+            </div>
+            <div class="row justify-content-between">
+              <div class="col-12">
+                <p class="text-start">
+                  {{"ticket.success.message" | translate: {ticketId:ticketId} }}
+                </p>
+                <p class="text-start">
+                  {{"ticket.success.instructions" | translate }}
+                </p>
+                <p class="text-start h4 pb-1 mb-1 text-warning font-bolder">
+                  {{"ticket.success.note" | translate }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-xs-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6 m-0 p-0">
+            <div class="fst-normal fs-6 h5 text-center" style="color:#1E4076">
+              {{"ticket.success.title2" | translate }}: {{ticketId}}
+            </div>
+            <div class="text-center p-0 m-0">
+              <ngx-qrcode-styling [config]="config" #qrcode></ngx-qrcode-styling> 
+            </div>
+            <div class="text-primary text-center font-bold">
+              <button class="btn btn-link m-0 p-0" (click)="onDownload(qrcode)">{{"button.downloadQR" | translate }}</button>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-lg-between justify-content-sm-center justify-content-xs-center">
+          <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+            <button type="button" class="btn btn-primary" [routerLink]="['/register-ticket']" [queryParams]="{lang,header}">
+              {{"button.registerNewTicket" | translate }}
+            </button>
+            <div *ngIf="eirsportallink then eirs else self"></div>
+            <ng-template #eirs>
+              <a type="button" class="btn btn-primary" [href]="eirsportallink">
+                {{"button.backToHome" | translate }}
+              </a>
+            </ng-template>
+            <ng-template #self>
+              <button type="button" class="btn btn-primary" (click)="_location.back()">
+                {{"button.backToHome" | translate }}
+              </button>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>

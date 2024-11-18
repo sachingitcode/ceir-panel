@@ -1,0 +1,181 @@
+<div class="clr-row m-0 p-0 clr-justify-content-center">
+  <div [ngClass]="{'clr-col-12 m-0 p-0': authService.isLogin(), 'clr-col-11': !authService.isLogin()}">
+    <div class="card m-0 p-0" style="min-height: 500px;" [ngClass]="{'border border-1 shadow-none': authService.isLogin(), 'shadow-none': !authService.isLogin()}">
+      <div class="card-header" [ngClass]="{'': authService.isLogin(), 'border border-0': !authService.isLogin()}">
+        <div class="clr-row clr-justify-content-between">
+          <div class="clr-col-12" style="margin-top: 5px;">
+            <h4 class="card-title text-capitalize">
+              <div *ngIf="authService.isLogin(); then login else logout"></div>
+              <ng-template #login>
+                <ng-template [ngxPermissionsOnly]="['TICKET_SSYSADMIN']" [ngxPermissionsOnlyElse]="cc"></ng-template>
+                <ng-template #cc>
+                  <a (click)="_location.back()" href="Javascript:void(0)">
+                    <cds-icon shape="arrow" direction="left" solid="true" class="text-black" size="md"></cds-icon>
+                  </a>
+                  &nbsp;
+                </ng-template>
+                <span class="text-black">{{'ticketThread.ticketId' | translate}}: <span class="fw-lighter">{{ticketId}}</span></span>
+              </ng-template>
+              <ng-template #logout>{{'ticketThread.viewTicket' | translate}}: {{ticketId}}</ng-template>
+            </h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-block" *ngIf="ticket.issue">
+        <div class="card border mt-1 shadow-none">
+          <div class="card-header">
+            <ul class="list-group list-group-horizontal border-0 d-flex" *ngIf="ticket.issue">
+              <li class="list-group-item border-0 m-0 p-0 subjectline">{{'ticketThread.createdOn' | translate}}: {{ticket.issue.createdOn | date: 'medium'}}</li>
+              <li class="list-group-item border-0 m-0 p-0 subjectline">{{'ticketThread.updatedOn' | translate}}: {{ticket.issue.updatedOn | date: 'medium'}}</li>
+              <div *ngIf="ticket.raisedBy===ticket.mobileNumber then country else mail"></div>
+              <ng-template #country>
+                <li class="list-group-item border-0 m-0 p-0 subjectline text-truncate">{{'ticketThread.raisedBy' | translate}}: {{cnf.get('countryCode')}}  {{ticket.mobileNumber}}</li>
+              </ng-template>
+              <ng-template #mail>
+                <li class="list-group-item border-0 m-0 p-0 subjectline text-truncate">{{'ticketThread.raisedBy' | translate}}: {{ticket.raisedBy}}</li>
+              </ng-template>
+              <!--li class="list-group-item border-0 m-0 p-0 subjectline">Category: {{ticket.category}}</li-->
+              <li class="list-group-item border-0 m-0 p-0 subjectline">{{'ticketThread.contactNumber' | translate}}: {{cnf.get('countryCode')}}  {{ticket.mobileNumber}}</li>
+              <li class="list-group-item border-0 m-0 p-0 fw-bold ms-auto"
+                [ngClass]="ticket.issue.status.name==='New' || ticket.issue.status.name==='InProgress' ? 'blue': 'green'">
+                {{'ticketThread.status' | translate}}: {{ticket.issue.status.name}}
+              </li>
+            </ul>
+          </div>
+          <div class="card-block m-0 p-0" *ngIf="ticket.issue">
+            <p class="border border-light-subtle p-1 m-0 p-0" style="background-color:#EFF5FF;">
+              <span class="fw-semibold text-secondary">&nbsp;{{'ticketThread.subject' | translate}}:</span> <span
+                class="text-black fw-semibold mx-2">{{ticket.issue.subject}}</span>
+            </p>
+            <h5 class="m-2 text-secondary mt-2 pt-2 mb-1 pb-1 m-0 p-0">{{'ticketThread.description' | translate}}:</h5>
+            <p class="m-2 text-black">{{ticket.issue.description}}</p>
+          </div>
+        </div>
+        <form clrStepper clrForm clrLayout="vertical" class="m-0 p-0" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit(f)">
+          <div *ngIf="ticket.issue && !allowStatusForComments.includes(ticket.issue.status.name) then comment"></div>
+          <ng-template #comment>
+            <ng-template [ngxPermissionsOnly]="['TICKET_VISIBILITY']" [ngxPermissionsOnlyThen]="visibility"></ng-template>
+            <ng-template #visibility>
+            <div class="clr-row mt-2 m-0 p-0 clr-justify-content-between" *ngIf="authService.isLogin()">
+              <div class="clr-col-3">
+                <clr-radio-wrapper class="float-start">
+                  <input type="radio" clrRadio value="public" name="visibility" [(ngModel)]="notes.visibility"/>
+                  <label>{{'ticketThread.public' | translate}}</label>
+                </clr-radio-wrapper>
+              </div>
+              <div class="clr-col-3">
+                <clr-radio-wrapper class="float-end">
+                  <input type="radio" clrRadio value="private" name="visibility" [(ngModel)]="notes.visibility"/>
+                  <label>{{'ticketThread.private' | translate}}</label>
+                </clr-radio-wrapper>
+              </div>
+            </div>
+            </ng-template>
+            <div class="clr-row mt-2 border m-1 rounded">
+              <div class="clr-col-12 m-0 p-0">
+                <div class="form-group shadow-none">
+                  <textarea name="notes" required class="form-control form-control-sm border border-0 shadow-none text-black" [(ngModel)]="notes.notes"
+                  [placeholder]="'ticketThread.message' | translate"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="clr-row m-1">
+              <div class="m-0 p-0 mt-2" [ngClass]="{'clr-col-12': authService.isLogin(), 'clr-col-10': !authService.isLogin()}">
+                <span class="fw-semibold text-danger">{{'ticketThread.note' | translate}}:</span><span class="text-black font-bolder">&nbsp;"{{'ticketThread.noteText' | translate}}"</span>
+              </div>
+            </div>
+            <div class="clr-row clr-justify-content-between m-0 p-0">
+              <div class="m-0 p-0 mt-2 clr-col-12">
+                <div class="clr-row clr-justify-content-between m-0 p-0">
+                  <div class="clr-col-6">
+                    <button type="submit" class="btn btn-primary" [disabled]="f.form.invalid"
+                     [disabled]="ticket.issue.status.name === 'Resolved' || ticket.issue.status.name === 'Closed'">
+                      <cds-icon shape="plus"></cds-icon> {{'ticketThread.addComment' | translate}}
+                    </button>
+                  </div>
+                  <div class="clr-col-6 text-right" *ngIf="!allowStatusForComments.includes(ticket.issue.status.name)">
+                    <button type="button" class="btn btn-primary" (click)="openResolved(true)">
+                      {{'ticketThread.resolved' | translate}}
+                    </button>
+                  </div>
+                  <div class="clr-col-6 text-right" *ngIf="ticket.issue.status.name==='Resolved' && !authService.isLogin()">
+                    <button type="button" class="btn btn-primary" (click)="feedback=true">
+                      {{'ticketThread.resolvedGrivance' | translate}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </form>
+        <div class="clr-row clr-justify-content-center m-0 p-0 mt-2 " *ngFor="let j of sortData">
+          <div *ngIf="authService.isLogin() then login else logout"></div>
+          <ng-template #login>
+            <div class="m-0 p-0 mt-2 clr-col-12" *ngIf="j.notes">
+              <div class="clr-row clr-justify-content-between m-0 p-0">
+                <div *ngIf="!endUsers.includes(j.user.name); then cc else eu"></div>
+                <ng-template #cc>
+                  <label class="clr-col-3 text-right" #cc>{{'ticketThread.supportTitle' | translate}}</label>
+                </ng-template>
+                <ng-template #eu>
+                  <div class="clr-col-3 text-right fw-medium" #eu>
+                    User: <span class="text-break">{{j.user.name}}</span>
+                  </div>
+                </ng-template>
+                <div class="clr-col-9 rounded-1 m-0 p-0 border" style="min-height: 100px;">
+                  <div class="clr-row clr-justify-content-between m-0 p-0 ms-4 me-4 mt-3">
+                    <div class="clr-col-6 text-secondary">{{'ticketThread.postedOn' | translate}} {{j.createdOn | date: 'medium'}}</div>
+                    <ng-template [ngxPermissionsOnly]="['TICKET_SSYSADMIN']" [ngxPermissionsOnlyElse]="visibility"></ng-template>
+                    <ng-template #visibility>
+                      <div class="clr-col-6 text-right fw-bolder" [ngClass]="j?.privateNotes ? 'text-danger': 'text-success'">
+                        <div *ngIf="j?.privateNotes then private else public"></div>
+                        <ng-template #public>Public</ng-template>
+                        <ng-template #private><cds-icon shape="lock" solid="true"></cds-icon> Private</ng-template>
+                      </div>
+                    </ng-template>
+                  </div>
+                  <div class="clr-row m-0 p-0">
+                    <div class="clr-col-6 ms-4 me-4 fw-medium">{{j?.notes}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template #logout>
+            <div class="m-0 p-0 mt-2 clr-col-12" *ngIf="j.notes">
+              <div *ngIf="!endUsers.includes(j.user.name); then cc else eu"></div>
+              <ng-template #cc>
+                <div class="clr-row clr-justify-content-between m-0 p-0" *ngIf="j.privateNotes===false">
+                  <label class="clr-col-3 text-right">{{'ticketThread.supportTitle' | translate}}</label>
+                  <div class="clr-col-9 rounded-1 m-0 p-0 border" style="min-height: 100px;">
+                    <div class="clr-row clr-justify-content-between m-0 p-0 ms-4 me-4 mt-3">
+                      <div class="clr-col-6 text-secondary">{{'ticketThread.postedOn' | translate}} {{j.createdOn | date: 'medium'}}</div>
+                    </div>
+                    <div class="clr-row m-0 p-0">
+                      <div class="clr-col-6 ms-4 me-4 fw-medium">{{j?.notes}}</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template #eu>
+                <div class="clr-row clr-justify-content-between m-0 p-0">
+                  <div class="clr-col-3 text-right fw-medium">{{ticket.firstName}} {{ticket.lastName}}:</div>
+                  <div class="clr-col-9 rounded-1 m-0 p-0 border" style="min-height: 100px;">
+                    <div class="clr-row clr-justify-content-between m-0 p-0 ms-4 me-4 mt-3">
+                      <div class="clr-col-6 text-secondary">{{'ticketThread.postedOn' | translate}} {{j.createdOn | date: 'medium'}}</div>
+                    </div>
+                    <div class="clr-row m-0 p-0">
+                      <div class="clr-col-6 ms-4 me-4 fw-medium">{{j?.notes}}</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ceirpanel-ticket-resolve [ticketId]="ticketId" [open]="open" (confirmation)="resolve($event)"></ceirpanel-ticket-resolve>
+<ceirpanel-ticket-feedback [ticketId]="ticketId" [open]="feedback" (confirmation)="endUserFeedback($event)"></ceirpanel-ticket-feedback>

@@ -1,0 +1,163 @@
+[
+    {
+        "name": "Dashboard",
+        "icon": "dashboard",
+        "link": "dashboard",
+        "key": "dashboard",
+        "open": false
+    },
+    {
+        "name": "Device Management",
+        "icon": "devices",
+        "link": "device",
+        "key": "device",
+        "open": false
+    },
+    {
+        "name": "Group Management",
+        "icon": "cog",
+        "link": "group",
+        "key": "groupManagement"
+    },
+    {
+        "name": "Feature Management",
+        "icon": "user",
+        "link": "feature",
+        "key": "featureManagement",
+        "open": false
+    },
+    {
+        "name": "Module Management",
+        "icon": "tag",
+        "link": "module",
+        "key": "moduleManagement"
+    },
+    {
+        "name": "Module TAG Management",
+        "icon": "tags",
+        "link": "tag",
+        "key": "moduleTagManagement"
+    },
+    {
+        "name": "Group Feature Management",
+        "icon": "host-group",
+        "link": "group-feature",
+        "key": "groupFeatureManagement"
+    },
+    {
+        "name": "User Feature Management",
+        "icon": "form",
+        "link": "role",
+        "key": "userFeatureManagement",
+        "open": false
+    },
+    {
+        "name": "Role Management",
+        "icon": "users",
+        "link": "role",
+        "key": "role",
+        "open": false
+    },
+    {
+        "name": "User Role Management",
+        "icon": "library",
+        "link": "user-role",
+        "key": "userRole",
+        "open": false
+    },
+    {
+        "name": "Group Role Management",
+        "icon": "node-group",
+        "link": "editor",
+        "key": "groupRoleManagement"
+    },
+    {
+        "name": "Access Control Management",
+        "icon": "no-access",
+        "link": "role",
+        "key": "acl",
+        "open": false
+    },
+    {
+        "name": "User Management",
+        "icon": "cog",
+        "link": "user",
+        "key": "userManagement",
+        "open": false
+    },
+    {
+        "name": "User",
+        "icon": "user",
+        "open": false,
+        "key": "user",
+        "child": [
+            {
+                "name": "User Management",
+                "icon": "cog",
+                "link": "user",
+                "key": "userManagement",
+                "open": false
+            },
+            {
+                "name": "User Feature Management",
+                "icon": "form",
+                "link": "role",
+                "key": "userFeatureManagement",
+                "open": false
+            },
+            {
+                "name": "User Role Management",
+                "icon": "library",
+                "link": "user-role",
+                "key": "userRole",
+                "open": false
+            }
+        ]
+    },
+    {
+        "name": "Group",
+        "icon": "employee-group",
+        "open": false,
+        "key": "group",
+        "child": [
+            {
+                "name": "Group Management",
+                "icon": "cog",
+                "link": "group",
+                "key": "groupManagement"
+            },
+            {
+                "name": "Group Feature Management",
+                "icon": "host-group",
+                "link": "group-feature",
+                "key": "groupFeatureManagement"
+            },
+            {
+                "name": "Group Role Management",
+                "icon": "node-group",
+                "link": "editor",
+                "key": "groupRoleManagement"
+            }
+        ]
+    },
+    {
+        "name": "Module",
+        "icon": "cog",
+        "open": false,
+        "key": "moduleManagement",
+        "child": [
+            {
+                "name": "Module Management",
+                "icon": "tag",
+                "link": "module",
+                "key": "moduleManagement"
+            },
+            {
+                "name": "Module TAG Management",
+                "icon": "tags",
+                "link": "tag",
+                "key": "moduleTagManagement"
+            }
+        ]
+    }
+]
